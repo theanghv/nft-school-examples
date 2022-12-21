@@ -6,55 +6,7 @@ import { useContractLoader } from "../hooks";
 import Account from "./Account";
 import { Transactor } from "../helpers";
 import { NFT_STORAGE_KEY, DEFAULT_CONTRACT_NAME } from "../constants";
-
-
-/**
-   * Creates a new NFTVoucher object and signs it using this LazyMinter's signing key.
-   * 
-   * @param {ethers.BigNumber | number} tokenId the id of the un-minted NFT
-   * @param {string} uri the metadata URI to associate with this NFT
-   * @param {ethers.BigNumber | number} minPrice the minimum price (in wei) that the creator will accept to redeem this NFT. defaults to zero
-   * 
-   * @returns {NFTVoucher}
-   */
-async function createVoucher(tokenId, uri, minPrice = 0) {
-  const voucher = { tokenId, uri, minPrice }
-  const domain = await this._signingDomain()
-  const types = {
-    NFTVoucher: [
-      { name: "tokenId", type: "uint256" },
-      { name: "minPrice", type: "uint256" },
-      { name: "uri", type: "string" },
-    ]
-  }
-  const signature = await this.signer._signTypedData(domain, types, voucher)
-  return {
-    ...voucher,
-    signature,
-  }
-}
-
-/**
- * @private
- * @returns {object} the EIP-721 signing domain, tied to the chainId of the signer
- */
-async function _signingDomain() {
-  if (this._domain != null) {
-    return this._domain
-  }
-  const chainId = await this.contract.getChainID()
-  this._domain = {
-    name: SIGNING_DOMAIN_NAME,
-    version: SIGNING_DOMAIN_VERSION,
-    verifyingContract: this.contract.address,
-    chainId,
-  }
-  return this._domain
-}
-
-
-
-
+import { LazyMinter } from "../helpers/LazyMinter";
 
 async function mintNFT({ contract, ownerAddress, provider, gasPrice, setStatus, image, name, description }) {
 
@@ -72,11 +24,9 @@ async function mintNFT({ contract, ownerAddress, provider, gasPrice, setStatus, 
   // our smart contract already prefixes URIs with "ipfs://", so we remove it before calling the `mintToken` function
   const metadataURI = metadata.url.replace(/^ipfs:\/\//, "");
 
-  const lazyMinter = new LazyMinter({ contract, signer: minter })
-  const minPrice = ethers.constants.WeiPerEther // charge 1 Eth
-
   // get metadata hash replace 1
-  const voucher = await lazyMinter.createVoucher(1, metadata.url, minPrice)
+  const lazyMinter = new LazyMinter({ contract, signer: ownerAddress })
+  const voucher = await lazyMinter.createVoucher(1, metadata.url)
 
   return voucher.tokenId;
 
