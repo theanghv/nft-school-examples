@@ -1,5 +1,5 @@
 // API token for nft.storage. Please sign up and replace this with your own key from https://nft.storage/manage/
-export const NFT_STORAGE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQxMjY5RGIwQjdjNzA3Y0I0MjZCMjg2MUI1NTY2ZEEwZTZjQzVmOTAiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYyMjA2NTE1OTYxMCwibmFtZSI6Im5mdHNjaG9vbC10ZXN0In0.DSgQ5yot5Qyp4_OMg16h7hHOSRUQK7jkjiH7sM3DHOE";
+export const NFT_STORAGE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEE3QjMzMDc4OEMzMjI0MGJiNjlDMDJmRTIyNDI4MjVFNGQxNzhhRUYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MDgzMTI1MTE4MCwibmFtZSI6InRlc3QifQ.puZUDYkHLFklP_P-0Fic0xYXu7cfhT1hUounuYpeX9g";
 
 // Infura project ID. If you're building a real app based on this, please replace with your own from https://infura.io/dashboard/ethereum
 export const INFURA_ID = "69f75bb89ba74822b512b464ef1495c9";
@@ -93,7 +93,7 @@ export const NETWORKS = {
     color: "#92D9FA",
     chainId: 80001,
     price: 1,
-    gasPrice: 1000000000,
+    gasPrice: 0.001,
     rpcUrl: "https://rpc-mumbai.maticvigil.com",
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://mumbai-explorer.matic.today/",

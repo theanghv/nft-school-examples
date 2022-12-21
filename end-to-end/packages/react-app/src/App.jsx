@@ -24,7 +24,7 @@ import {
 } from "./hooks";
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -235,9 +235,15 @@ function App(props) {
 
   return (
     <div className="App">
-      <Header />
-      {networkDisplay}
-      <BrowserRouter>
+       <Minter
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+      {/* <Header /> */}
+      {/* {networkDisplay} */}
+      {/* <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
         <Menu.Item key="/">
             <Link
@@ -248,8 +254,8 @@ function App(props) {
             >
               Mint an NFT
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/view">
+          </Menu.Item> */}
+          {/* <Menu.Item key="/view">
             <Link
               onClick={() => { setRoute("/view"); }}
               to="/view">View an NFT</Link>
@@ -263,8 +269,8 @@ function App(props) {
             >
               NFTMinter Contract
             </Link>
-          </Menu.Item>
-        </Menu>
+          </Menu.Item> */}
+        {/* </Menu>
 
         <Switch>
           <Route exact path="/">
@@ -274,9 +280,9 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-          </Route>
+          </Route> */}
 
-          <Route path="/view">
+          {/* <Route path="/view">
               <NFTViewer
                 provider={localProvider}
                 address={address}
@@ -286,15 +292,15 @@ function App(props) {
 
           <Route exact path="/contract">
             <Contract
-              name="NFTMinter"
+              name="LazyNFT"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
-          </Route>
-        </Switch>
-      </BrowserRouter>
+          </Route> */}
+        {/* </Switch> */}
+      {/* </BrowserRouter> */}
 
       <ThemeSwitch />
 

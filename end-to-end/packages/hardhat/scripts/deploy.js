@@ -5,12 +5,36 @@ const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
 
+const { expect } = require("chai");
+const hardhat = require("hardhat");
+const { ethers } = hardhat;
+
+
+
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
-  const yourContract = await deploy("NFTMinter", ["NFTExample", "E2ENFT"]) // <-- add in constructor args like line 19 vvvv
+  const [minter, redeemer, _] = await ethers.getSigners()
 
+  let factory = await ethers.getContractFactory("LazyNFT", minter)
+  const contract = await factory.deploy(minter.address)
+
+  // the redeemerContract is an instance of the contract that's wired up to the redeemer's signing key
+  const redeemerFactory = factory.connect(redeemer)
+  const redeemerContract = redeemerFactory.attach(contract.address)
+
+  return {
+    minter,
+    redeemer,
+    contract,
+    redeemerContract,
+  }
+
+  // const yourContract = await deploy("LazyNFT", ["NFTExample", "E2ENFT"]) // <-- add in constructor args like line 19 vvvv
+
+
+  
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   //const secondContract = await deploy("SecondContract")
 
