@@ -7,7 +7,6 @@ const R = require("ramda");
 
 const { expect } = require("chai");
 const hardhat = require("hardhat");
-const { ethers } = hardhat;
 
 
 
@@ -16,20 +15,7 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
   const [minter, redeemer, _] = await ethers.getSigners()
-
-  let factory = await ethers.getContractFactory("LazyNFT", minter)
-  const contract = await factory.deploy(minter.address)
-
-  // the redeemerContract is an instance of the contract that's wired up to the redeemer's signing key
-  const redeemerFactory = factory.connect(redeemer)
-  const redeemerContract = redeemerFactory.attach(contract.address)
-
-  return {
-    minter,
-    redeemer,
-    contract,
-    redeemerContract,
-  }
+  const contract = await deploy("LazyNFT", [minter.address])
 
   // const yourContract = await deploy("LazyNFT", ["NFTExample", "E2ENFT"]) // <-- add in constructor args like line 19 vvvv
 
