@@ -14,8 +14,21 @@ const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
+  // const [minter, redeemer, _] = await ethers.getSigners()
+  // const contract = await deploy("LazyNFT", [minter.address])
+
+
   const [minter, redeemer, _] = await ethers.getSigners()
-  const contract = await deploy("LazyNFT", [minter.address])
+
+  let factory = await ethers.getContractFactory("LazyNFT", minter)
+  const contract = await factory.deploy(minter.address)
+
+  return {
+    minter,
+    redeemer,
+    contract
+    // redeemerContract,
+  }
 
   // const yourContract = await deploy("LazyNFT", ["NFTExample", "E2ENFT"]) // <-- add in constructor args like line 19 vvvv
 

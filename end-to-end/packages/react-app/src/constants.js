@@ -2,7 +2,7 @@
 export const NFT_STORAGE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEE3QjMzMDc4OEMzMjI0MGJiNjlDMDJmRTIyNDI4MjVFNGQxNzhhRUYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3MDgzMTI1MTE4MCwibmFtZSI6InRlc3QifQ.puZUDYkHLFklP_P-0Fic0xYXu7cfhT1hUounuYpeX9g";
 
 // Infura project ID. If you're building a real app based on this, please replace with your own from https://infura.io/dashboard/ethereum
-export const INFURA_ID = "69f75bb89ba74822b512b464ef1495c9";
+export const INFURA_ID = "471d17688c844dd385d9e5945b1a43c2";
 
 // Key for Etherscan.io. If you're building a real app based on this, please replace with your own from https://etherscan.io/myapikey
 export const ETHERSCAN_KEY = "6EAGC2DEG6PP3M1GP1I86QJPQAUE4ESW1W";
@@ -92,7 +92,7 @@ export const NETWORKS = {
     name: "mumbai",
     color: "#92D9FA",
     chainId: 80001,
-    price: 1,
+    // price: 1,
     gasPrice: 0.001,
     rpcUrl: "https://rpc-mumbai.maticvigil.com",
     faucet: "https://faucet.matic.network/",

@@ -7,8 +7,13 @@ import Account from "./Account";
 import { Transactor } from "../helpers";
 import { NFT_STORAGE_KEY, DEFAULT_CONTRACT_NAME } from "../constants";
 import { LazyMinter } from "../helpers/LazyMinter";
+import contracts from "../contracts/contracts";
 
-async function mintNFT({ contract, ownerAddress, provider, gasPrice, setStatus, image, name, description }) {
+
+
+
+
+async function mintNFT({ contract, provider, signer, gasPrice, setStatus, image, name, description }) {
 
   // First we use the nft.storage client library to add the image and metadata to IPFS / Filecoin
   const client = new NFTStorage({ token: NFT_STORAGE_KEY });
@@ -23,34 +28,21 @@ async function mintNFT({ contract, ownerAddress, provider, gasPrice, setStatus, 
   // the returned metadata.url has the IPFS URI we want to add.
   // our smart contract already prefixes URIs with "ipfs://", so we remove it before calling the `mintToken` function
   const metadataURI = metadata.url.replace(/^ipfs:\/\//, "");
-
   // get metadata hash replace 1
-  const lazyMinter = new LazyMinter({ contract, signer: ownerAddress })
+
+ 
+
+
+  const lazyMinter = new LazyMinter({ contract, signer: signer })
   const voucher = await lazyMinter.createVoucher(1, metadata.url)
+
+  console.log("Token Id  " + voucher.tokenId);
 
   return voucher.tokenId;
 
-
-  // scaffold-eth's Transactor helper gives us a nice UI popup when a transaction is sent
-  /* const transactor = Transactor(provider, gasPrice);
-   const tx = await transactor(contract.mintToken(ownerAddress, metadataURI));
- 
-   setStatus("Blockchain transaction sent, waiting confirmation...");
- 
-   // Wait for the transaction to be confirmed, then get the token ID out of the emitted Transfer event.
-   const receipt = await tx.wait();
-  
-   let tokenId = null;
-   for (const event of receipt.events) {
-     if (event.event !== 'Transfer') {
-         continue
-     }
-     tokenId = event.args.tokenId.toString();
-     break;
-   }
-   setStatus(`Minted token #${tokenId}`);
-   return tokenId;*/
 }
+
+
 
 export default function Minter({
   customContract,
@@ -139,26 +131,24 @@ export default function Minter({
   const startMinting = () => {
     console.log(`minting nft with name ${nftName}`);
     setMinting(true);
+    
     signer.getAddress().then(ownerAddress => {
       mintNFT({
         contract,
         provider,
-        ownerAddress,
-        gasPrice,
+        signer,
+        // gasPrice,
         setStatus,
         name: nftName,
         image: file,
         description
       }).then(newTokenId => {
         setMinting(false);
+        console.log("New token is " + newTokenId);
         console.log('minting complete');
         setTokenId(newTokenId);
       })
     });
-  }
-
-  const startCreateVoucher = () => {
-
   }
 
   const mintButton = (

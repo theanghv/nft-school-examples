@@ -3,6 +3,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
+
 require("@tenderly/hardhat-tenderly")
 
 require("@nomiclabs/hardhat-etherscan");
@@ -89,7 +90,7 @@ module.exports = {
     },
     matic: {
       url: 'https://rpc-mainnet.maticvigil.com/',
-      gasPrice: 1000000000,
+      gasPrice: 0.01,
       accounts: {
         mnemonic: mnemonic(),
       },

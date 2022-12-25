@@ -18,8 +18,9 @@ async function fetchIPFSJSON(ipfsURI) {
   return resp.json();
 }
 
-async function getNFT({contract, provider, tokenId}) {
-  const metadataURI = await contract.tokenURI(tokenId);
+async function getNFT({contracts, provider, tokenId}) {
+ 
+  const metadataURI = await contracts.tokenURI(tokenId);
   console.log('metadata uri: ', metadataURI);
   
   const metadata = await fetchIPFSJSON(metadataURI);
@@ -62,6 +63,7 @@ export default function NFTViewer({
   blockExplorer,
 }) {
   const contracts = useContractLoader(provider);
+  console.log("This is contracts",contracts)
   let contract;
   if (!name) {
     name = DEFAULT_CONTRACT_NAME;
@@ -71,6 +73,8 @@ export default function NFTViewer({
   } else {
     contract = customContract;
   }
+
+  console.log("contract is",contract)
 
   const address = contract ? contract.address : "";
 

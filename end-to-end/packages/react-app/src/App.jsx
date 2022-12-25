@@ -235,12 +235,43 @@ function App(props) {
 
   return (
     <div className="App">
+      <Header/>
+
+<BrowserRouter>
+<Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
+        <Menu.Item key="/">
+            <Link
+              onClick={() => {
+                setRoute("/");
+              }}
+              to="/"
+            >
+              Mint an NFT
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/view">
+            <Link
+              onClick={() => { setRoute("/view"); }}
+              to="/view">View an NFT</Link>
+          </Menu.Item>
+</Menu>
+
+          <Switch>
+          <Route exact path="/">
        <Minter
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
+            </Route>
+            <Route path="/view">
+              <NFTViewer
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
+          </Route>
       {/* <Header /> */}
       {/* {networkDisplay} */}
       {/* <BrowserRouter>
@@ -301,6 +332,10 @@ function App(props) {
           </Route> */}
         {/* </Switch> */}
       {/* </BrowserRouter> */}
+
+      </Switch>
+
+      </BrowserRouter>
 
       <ThemeSwitch />
 

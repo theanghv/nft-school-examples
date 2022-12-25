@@ -1,4 +1,6 @@
 const ethers = require('ethers')
+// const hardhat = require("hardhat");
+
 
 // These constants must match the ones used in the smart contract.
 const SIGNING_DOMAIN_NAME = "LazyNFT-Voucher"
@@ -45,12 +47,12 @@ class LazyMinter {
     const domain = await this._signingDomain()
     const types = {
       NFTVoucher: [
-        {name: "tokenId", type: "uint256"},
-        {name: "minPrice", type: "uint256"},
-        {name: "uri", type: "string"},  
+        { name: "tokenId", type: "uint256" },
+        { name: "minPrice", type: "uint256" },
+        { name: "uri", type: "string" },
       ]
     }
-    const signature = await this.signer._signTypedData(domain, types, voucher)
+    const signature = await this.signer._signTypedData(domain, types, voucher);
     return {
       ...voucher,
       signature,
@@ -63,14 +65,18 @@ class LazyMinter {
    */
   async _signingDomain() {
     if (this._domain != null) {
+      console.log("it s not null");
       return this._domain
     }
-    const chainId = await this.contract.getChainID()
+    // console.log("The contract is " + this.contract);
+    // console.log("chain id " + this.contract.getChainID())
+    // const chainId = await this.contract.getChainID();
+    // console.log("chain id " + chainId);
     this._domain = {
       name: SIGNING_DOMAIN_NAME,
       version: SIGNING_DOMAIN_VERSION,
       verifyingContract: this.contract.address,
-      chainId,
+      chainId: 80001,
     }
     return this._domain
   }
