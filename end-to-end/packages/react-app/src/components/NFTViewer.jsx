@@ -5,11 +5,17 @@ import { useContractLoader } from "../hooks";
 import Account from "./Account";
 import { useParams } from "react-router-dom";
 
-const DEFAULT_CONTRACT_NAME = "NFTMinter";
+const DEFAULT_CONTRACT_NAME = "LazyNFT";
 
 // rewrite ipfs:// uris to dweb.link gateway URLs
 function makeGatewayURL(ipfsURI) {
   return ipfsURI.replace(/^ipfs:\/\//, "https://dweb.link/ipfs/");
+}
+
+async function fetchIpfsJsonFromCid(tokenId) {
+  const url = "https://dweb.link/ipfs/" + tokenId + "/metadata.json";
+  const resp = await fetch(url);
+  return resp.json();
 }
 
 async function fetchIPFSJSON(ipfsURI) {
@@ -18,13 +24,20 @@ async function fetchIPFSJSON(ipfsURI) {
   return resp.json();
 }
 
-async function getNFT({contracts, provider, tokenId}) {
- 
-  const metadataURI = await contracts.tokenURI(tokenId);
-  console.log('metadata uri: ', metadataURI);
-  
-  const metadata = await fetchIPFSJSON(metadataURI);
-  console.log('metadata: ', metadata)
+async function getNFT({contract, provider, tokenId, cid}) {
+  let metadata;
+
+  if (tokenId) {
+    const metadataURI = await contract.tokenURI(tokenId);
+    console.log('metadata uri: ', metadataURI);
+    
+    metadata = await fetchIPFSJSON(metadataURI);
+    console.log('metadata: ', metadata)
+  } else {
+    console.log('cid: ' + cid);
+    metadata = await fetchIpfsJsonFromCid(cid);
+    console.log('metadata: ', metadata)
+  }
 
   if (metadata.image) {
     metadata.image = makeGatewayURL(metadata.image);
@@ -63,7 +76,6 @@ export default function NFTViewer({
   blockExplorer,
 }) {
   const contracts = useContractLoader(provider);
-  console.log("This is contracts",contracts)
   let contract;
   if (!name) {
     name = DEFAULT_CONTRACT_NAME;
@@ -73,8 +85,6 @@ export default function NFTViewer({
   } else {
     contract = customContract;
   }
-
-  console.log("contract is",contract)
 
   const address = contract ? contract.address : "";
 
@@ -96,12 +106,32 @@ export default function NFTViewer({
   }
 
   const tokenIdChanged = newTokenId => {
+    console.log('newTokenId: ' + newTokenId);
     if (!newTokenId) {
       return;
     }
     setSelectedToken(newTokenId);
     setLoading(true);
     getNFT({ contract, provider, tokenId: newTokenId }).then(nft => {
+      setNFTData(nft);
+      setLoading(false);
+      setErrorMessage("");
+    }).catch(e => {
+      console.log('error getting token: ', e);
+      setLoading(false);
+      setErrorMessage(e.message);
+      setNFTData(null);
+    })
+  }
+
+  const cidChanged = newCid => {
+    newCid = newCid.target.value;
+    if (!newCid) {
+      return;
+    }
+    // setSelectedToken(newTokenId);
+    setLoading(true);
+    getNFT({ contract, provider, cid: newCid }).then(nft => {
       setNFTData(nft);
       setLoading(false);
       setErrorMessage("");
@@ -139,6 +169,11 @@ export default function NFTViewer({
         <Space>
           Token ID:
           <InputNumber value={selectedToken} onChange={tokenIdChanged}/>
+        </Space>
+        <br/><br/>
+        <Space>
+          CID:
+          <Input type="text" onChange={cidChanged}/>
         </Space>
         {loading && <LoadingOutlined/>}
         {tokenView}

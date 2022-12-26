@@ -9,10 +9,6 @@ import { NFT_STORAGE_KEY, DEFAULT_CONTRACT_NAME } from "../constants";
 import { LazyMinter } from "../helpers/LazyMinter";
 import contracts from "../contracts/contracts";
 
-
-
-
-
 async function mintNFT({ contract, provider, signer, gasPrice, setStatus, image, name, description }) {
 
   // First we use the nft.storage client library to add the image and metadata to IPFS / Filecoin
@@ -27,19 +23,14 @@ async function mintNFT({ contract, provider, signer, gasPrice, setStatus, image,
 
   // the returned metadata.url has the IPFS URI we want to add.
   // our smart contract already prefixes URIs with "ipfs://", so we remove it before calling the `mintToken` function
-  const metadataURI = metadata.url.replace(/^ipfs:\/\//, "");
+  let cid = metadata.url.replace(/^ipfs:\/\//, "");
+  cid = cid.replace('/metadata.json', "");
+
   // get metadata hash replace 1
-
- 
-
-
   const lazyMinter = new LazyMinter({ contract, signer: signer })
   const voucher = await lazyMinter.createVoucher(1, metadata.url)
 
-  console.log("Token Id  " + voucher.tokenId);
-
-  return voucher.tokenId;
-
+  return { voucher, cid };
 }
 
 
@@ -142,11 +133,12 @@ export default function Minter({
         name: nftName,
         image: file,
         description
-      }).then(newTokenId => {
+      }).then(response => {
         setMinting(false);
-        console.log("New token is " + newTokenId);
+        console.log("Voucher is " + JSON.stringify(response.voucher));
+        console.log("CID is " + response.cid)
         console.log('minting complete');
-        setTokenId(newTokenId);
+        setTokenId(response.voucher.tokenId);
       })
     });
   }
